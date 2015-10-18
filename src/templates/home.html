@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+<style>
+{% block style %}
+h1 {
+    color: red;
+}
+{% endblock %}
+</style>
+
+{% block head_title %}
+    Welcome
+{% endblock %}
+{% block content %}
+
+    <h1>Hello from the block, {{ name }}</h1>
+    <div class="contain-fluid">
+        <div class="col-sm-8 col-offset-2">
+        <h3>Videos: {{ videos|length }}</h3>
+            {% for video in videos %}
+                <p>
+                    <div class="row">
+                    <div class="col-lg-8 col-offset-2">
+                        {{ forloop.counter }}
+                        <a href="{{ video.get_absolute_url }}" title="{{ video.title }}">
+                            {{ video.title }}
+                        </a>
+                    </div>
+                    </div>
+                    {{ video.embed_code|safe }}
+                </p>
+            {% endfor %}
+            <br/>
+
+            <h3>embeds: {{ embeds|length }}</h3>
+            {% for e in embeds %}
+                <p>{{ forloop.counter }}
+                {{ e }}</p>
+            {% endfor %}
+        </div>
+    </div>
+
+{% endblock content %}

@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block title %} {% endblock %}
+
+{% block content %}
+    <h3>{{ obj.title }}</h3>
+        <div>
+            {{ obj.embed_code|safe}}
+        </div>
+{% endblock content %}
