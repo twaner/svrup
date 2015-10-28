@@ -7,6 +7,7 @@ from comments.forms import CommentForm
 
 @login_required
 def video_detail(request, cat_slug, video_slug):
+    print("VIDEO DETAIL")
     try:
         cat = Category.objects.get(slug=cat_slug)
     except:
