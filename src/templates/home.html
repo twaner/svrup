@@ -14,6 +14,11 @@ h1 {
 {% block content %}
 
     <h1>Hello from the block, {{ name }}</h1>
+    <form method="POST" action="">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input class="btn btn-default" type="submit" value="Register">
+    </form>
     <div class="contain-fluid">
         <div class="col-sm-8 col-offset-2">
         <h3>Videos: {{ videos|length }}</h3>

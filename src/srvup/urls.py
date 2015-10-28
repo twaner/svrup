@@ -17,19 +17,29 @@ from django.conf.urls import include, patterns, url
 from django.contrib import admin
 from django.views.generic import TemplateView
 
+
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^$', 'srvup.views.home', name='home'),
     url(r'^staff/$', 'srvup.views.staff_home', name='staff'),
     # videos
-    url(r'^(?P<id>\d+)/$', 'videos.views.video_detail', name='video_detail'),
-    url(r'^videos/$', 'videos.views.video_list', name='video_list'),
+    url(r'^projects/$', 'videos.views.category_list', name='projects'),
+    url(r'^projects/(?P<cat_slug>[\w-]+)/$', 'videos.views.category_detail', name='project_detail'),
+    url(r'^projects/(?P<cat_slug>[\w-]+)/(?P<video_slug>[\w-]+)/$', 'videos.views.video_detail', name='video_detail'),
+    # categories
+    # url(r'^videos/$', 'videos.views.video_list', name='video_list'),
+    # url(r'^(?P<cat_slug>[\w-]+/?P<id>\d+)/$', 'videos.views.video_detail', name='video_detail'),
 
     # url(r'^$', TemplateView.as_view(template_name='base.html'), name='home')
 ]
-
 # auth login/logout
-urlpatterns += patterns('srvup.views',
+urlpatterns += patterns('accounts.views',
     url(r'^login/$', 'auth_login', name='login'),
     url(r'^logout/$', 'auth_logout', name='logout'),
+)
+
+# comment_thread
+urlpatterns += patterns('comments.views',
+    url(r'^comment/(?P<id>\d+)$', 'comment_thread', name='comment_thread'),
+    url(r'^comment/create/$', 'comment_create_view', name='comment_create'),
 )

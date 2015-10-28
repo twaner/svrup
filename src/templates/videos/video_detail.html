@@ -1,10 +1,129 @@
 {% extends 'base.html' %}
-
+{% load humanize %}
 {% block title %} {% endblock %}
+
+<style>
+    {% block style %}
+        .reply_comment {
+            display: none;
+        }
+    {% endblock %}
+</style>
+
 
 {% block content %}
     <h3>{{ obj.title }}</h3>
-        <div>
+        <div class="col-sm-10-" id="main_video">
             {{ obj.embed_code|safe}}
         </div>
+        <br/>
+        <i class="fa fa-twitter-square fa-2x"></i> <a target="_" href="https://twitter.com/home?status={{ obj.get_share_message|safe }}">Share on Twitter</a>
+        <!--<a href="https://twitter.com/share" class="twitter-share-button">Tweet</a> <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>-->
+
+        <div class="row">
+            <h4>Comments and Questions</h4>
+            <div class="col-sm-12">
+                <div class="row">
+                    <form action="" method="post">
+                        {% csrf_token %}
+                        {{ comment_form.as_p }}
+                        <input type="submit" value="Post Comment"/>
+                    </form>
+                </div>
+                <br/>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>User99</th>
+                                <th>Date</th>
+                                <th>Comment</th>
+                            </tr>
+                        </thead>
+                        {% for c in comments %}
+                        <tbody>
+                        <tr>
+                            <td style="width: 15%">{{ c}}</td>
+                            <td style="width: 20%">{{ c.updated|timesince }}</td>
+                            <td>{{ c.get_comment }}</td>
+                        </tr>
+                        {% if not c.is_child %} <!-- if comment is a parent comment -->
+                            {{ c.get_children|length }}
+                        {{ c.get_children }}
+                            {% if c.get_children|length > 0 %}
+                            <tr> <!--This row is for the child comments -->
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <table class="table table-bordered table-striped table-condensed">
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 15%">User2</th>
+                                                <th style="width: 20%">Date</th>
+                                                <th>Comment</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for child in c.get_children %}
+                                            <tr>
+                                                <td style="width: 15%">{{ child }}</td>
+                                                <td style="width: 20%">{{ child.updated|timesince }}</td>
+                                                <td>{{ child.get_comment }}</td>
+                                            </tr>
+                                            {% endfor %} <!-- This is the for loop to get the list of children -->
+                                            <!--Row for the form-->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            </tr> <!-- End row for child comment -->
+                            {% endif %}
+                        {% endif %}
+                        <tr class="reply_comment">
+
+                            <td colspan="3">
+                                <a href="#" class="reply_button">Reply</a> | <a href="{{ comment.get_absolute_url }}" class="thread_btn">View Thread</a>
+                            <form action="" method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="parent_id" value="{{ comment.id }}"/>
+                                {{ comment_form.as_p }}
+                                <input type="submit" value="Add Comment" class="btn btn-default"/>
+                            </form>
+                            </td>
+                        </tr>
+                        </tbody>
+                        {% endfor %} <!-- for loop on comments -->
+                    </table><!--.table Main-->
+                </div>
+            </div>
+        </div>
+
 {% endblock content %}
+<script>
+    {% block jQuery %}
+        function update_iframe_size(){
+            var parent_id = $('iframe').parent().attr('id')
+            if (parent_id=='main_video') {
+                var parent_class = $('iframe').parent().attr('class');
+                var parent_width = $('iframe').parent().width();
+
+                var width = $('iframe').css('width');
+                var height = $('iframe').css('height');
+                var ratio = parseInt(height) / parseInt(width);
+                var new_height = parseInt(new_height) * ratio;
+                $('iframe').css('width', parent_width);
+                $('iframe').css('height', new_height);
+            }
+        }
+        update_iframe_size()
+        $(window).bind("resize", function(){
+            update_iframe_size()
+        });
+
+    $('reply_button').click(function(e){
+        e.preventDefault();
+        $(this).next('.reply_comment').fadeToggle();
+    });
+
+    {% endblock jQuery %}
+</script>
+

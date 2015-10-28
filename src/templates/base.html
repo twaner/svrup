@@ -15,6 +15,7 @@
     <!-- Bootstrap core CSS -->
     <!--<link href="../../dist/css/bootstrap.min.css" rel="stylesheet">-->
       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
     <!-- Optional theme -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
 
@@ -55,6 +56,11 @@
     </div> <!-- /container -->
 
     {% include 'javascript.html' %}
-
+    <script>
+        $(document).ready(function () {
+            {% block jQuery %}
+            {% endblock jQuery %}
+        })
+    </script>
   </body>
 </html>
