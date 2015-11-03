@@ -32,67 +32,100 @@
                 </div>
                 <br/>
                 <div class="table-responsive">
-                    <table class="table table-bordered table-striped">
-                        <thead>
-                            <tr>
-                                <th>User99</th>
-                                <th>Date</th>
-                                <th>Comment</th>
-                            </tr>
-                        </thead>
-                        {% for c in comments %}
-                        <tbody>
-                        <tr>
-                            <td style="width: 15%">{{ c}}</td>
-                            <td style="width: 20%">{{ c.updated|timesince }}</td>
-                            <td>{{ c.get_comment }}</td>
-                        </tr>
-                        {% if not c.is_child %} <!-- if comment is a parent comment -->
-                            {{ c.get_children|length }}
-                        {{ c.get_children }}
-                            {% if c.get_children|length > 0 %}
-                            <tr> <!--This row is for the child comments -->
-                                <div class="row">
-                                    <div class="col-sm-12">
-                                        <table class="table table-bordered table-striped table-condensed">
-                                        <thead>
-                                            <tr>
-                                                <th style="width: 15%">User2</th>
-                                                <th style="width: 20%">Date</th>
-                                                <th>Comment</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {% for child in c.get_children %}
-                                            <tr>
-                                                <td style="width: 15%">{{ child }}</td>
-                                                <td style="width: 20%">{{ child.updated|timesince }}</td>
-                                                <td>{{ child.get_comment }}</td>
-                                            </tr>
-                                            {% endfor %} <!-- This is the for loop to get the list of children -->
-                                            <!--Row for the form-->
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            </tr> <!-- End row for child comment -->
-                            {% endif %}
-                        {% endif %}
-                        <tr class="reply_comment">
+                    <table class="table">
+                        {% for comment in comments %}
+                            <tr><td>
+                                {{ comment.get_comment }}
+                                <small>
+                                    via {{ comment.user }}
+                                    {{ comment.timestamp|timesince }} ago
+                                </small>
+                                {% if not comment.is_child %}
+                                    <ul>
+                                        {% for child in comment.get_children %}
+                                        <li>
+                                            {{ child.get_comment }} ||
+                                            <small>via {{ child.user }}</small>
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+                                    <a href="#" class="reply_button">Reply</a> | <a href="{{ comment.get_absolute_url }}" class="thread_btn">View Thread</a>
+                                    <div class="reply_comment">
+                                        <form action="" method="post">
+                                            {% csrf_token %}
+                                            {{ comment_form.as_p }}
+                                            <input type="hidden" name="parent_id" value="{{ comment.id }}"/>
+                                            <input type="submit" value="Add Comment" class="btn btn-default"/>
+                                        </form>
+                                    </div>
+                                {% endif %}
 
-                            <td colspan="3">
-                                <a href="#" class="reply_button">Reply</a> | <a href="{{ comment.get_absolute_url }}" class="thread_btn">View Thread</a>
-                            <form action="" method="post">
-                                {% csrf_token %}
-                                <input type="hidden" name="parent_id" value="{{ comment.id }}"/>
-                                {{ comment_form.as_p }}
-                                <input type="submit" value="Add Comment" class="btn btn-default"/>
-                            </form>
-                            </td>
-                        </tr>
-                        </tbody>
-                        {% endfor %} <!-- for loop on comments -->
-                    </table><!--.table Main-->
+                            </td></tr>
+                        {% endfor %}
+                    </table>
+
+
+                    <!--&lt;!&ndash;<table class="table table-bordered table-striped">&ndash;&gt;-->
+                        <!--&lt;!&ndash;<thead>&ndash;&gt;-->
+                            <!--&lt;!&ndash;<tr>&ndash;&gt;-->
+                                <!--&lt;!&ndash;<th>User99</th>&ndash;&gt;-->
+                                <!--&lt;!&ndash;<th>Date</th>&ndash;&gt;-->
+                                <!--&lt;!&ndash;<th>Comment</th>&ndash;&gt;-->
+                            <!--&lt;!&ndash;</tr>&ndash;&gt;-->
+                        <!--&lt;!&ndash;</thead>&ndash;&gt;-->
+                        <!--&lt;!&ndash;{% for c in comments %}&ndash;&gt;-->
+                        <!--&lt;!&ndash;<tbody>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<tr>&ndash;&gt;-->
+                            <!--&lt;!&ndash;<td style="width: 15%">{{ c}}</td>&ndash;&gt;-->
+                            <!--&lt;!&ndash;<td style="width: 20%">{{ c.updated|timesince }}</td>&ndash;&gt;-->
+                            <!--&lt;!&ndash;<td>{{ c.get_comment }}</td>&ndash;&gt;-->
+                        <!--&lt;!&ndash;</tr>&ndash;&gt;-->
+                        <!--&lt;!&ndash;{% if not c.is_child %} &lt;!&ndash; if comment is a parent comment &ndash;&gt;&ndash;&gt;-->
+                            <!--&lt;!&ndash;{{ c.get_children|length }}&ndash;&gt;-->
+                        <!--&lt;!&ndash;{{ c.get_children }}&ndash;&gt;-->
+                            <!--&lt;!&ndash;{% if c.get_children|length > 0 %}&ndash;&gt;-->
+                            <!--&lt;!&ndash;<tr> &lt;!&ndash;This row is for the child comments &ndash;&gt;&ndash;&gt;-->
+                                <!--&lt;!&ndash;<div class="row">&ndash;&gt;-->
+                                    <!--&lt;!&ndash;<div class="col-sm-12">&ndash;&gt;-->
+                                        <!--&lt;!&ndash;<table class="table table-bordered table-striped table-condensed">&ndash;&gt;-->
+                                        <!--&lt;!&ndash;<thead>&ndash;&gt;-->
+                                            <!--&lt;!&ndash;<tr>&ndash;&gt;-->
+                                                <!--&lt;!&ndash;<th style="width: 15%">User2</th>&ndash;&gt;-->
+                                                <!--&lt;!&ndash;<th style="width: 20%">Date</th>&ndash;&gt;-->
+                                                <!--&lt;!&ndash;<th>Comment</th>&ndash;&gt;-->
+                                            <!--&lt;!&ndash;</tr>&ndash;&gt;-->
+                                        <!--&lt;!&ndash;</thead>&ndash;&gt;-->
+                                        <!--&lt;!&ndash;<tbody>&ndash;&gt;-->
+                                            <!--&lt;!&ndash;{% for child in c.get_children %}&ndash;&gt;-->
+                                            <!--&lt;!&ndash;<tr>&ndash;&gt;-->
+                                                <!--&lt;!&ndash;<td style="width: 15%">{{ child }}</td>&ndash;&gt;-->
+                                                <!--&lt;!&ndash;<td style="width: 20%">{{ child.updated|timesince }}</td>&ndash;&gt;-->
+                                                <!--&lt;!&ndash;<td>{{ child.get_comment }}</td>&ndash;&gt;-->
+                                            <!--&lt;!&ndash;</tr>&ndash;&gt;-->
+                                            <!--&lt;!&ndash;{% endfor %} &lt;!&ndash; This is the for loop to get the list of children &ndash;&gt;&ndash;&gt;-->
+                                            <!--&lt;!&ndash;&lt;!&ndash;Row for the form&ndash;&gt;&ndash;&gt;-->
+                                        <!--&lt;!&ndash;</tbody>&ndash;&gt;-->
+                                    <!--&lt;!&ndash;</table>&ndash;&gt;-->
+                                <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                            <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                            <!--&lt;!&ndash;</tr> &lt;!&ndash; End row for child comment &ndash;&gt;&ndash;&gt;-->
+                            <!--&lt;!&ndash;{% endif %}&ndash;&gt;-->
+                        <!--&lt;!&ndash;{% endif %}&ndash;&gt;-->
+                        <!--&lt;!&ndash;<tr class="reply_comment">&ndash;&gt;-->
+
+                            <!--&lt;!&ndash;<td colspan="3">&ndash;&gt;-->
+                                <!--&lt;!&ndash;<a href="#" class="reply_button">Reply</a> | <a href="{{ comment.get_absolute_url }}" class="thread_btn">View Thread</a>&ndash;&gt;-->
+                            <!--&lt;!&ndash;<form action="" method="post">&ndash;&gt;-->
+                                <!--&lt;!&ndash;{% csrf_token %}&ndash;&gt;-->
+                                <!--&lt;!&ndash;<input type="hidden" name="parent_id" value="{{ comment.id }}"/>&ndash;&gt;-->
+                                <!--&lt;!&ndash;{{ comment_form.as_p }}&ndash;&gt;-->
+                                <!--&lt;!&ndash;<input type="submit" value="Add Comment" class="btn btn-default"/>&ndash;&gt;-->
+                            <!--&lt;!&ndash;</form>&ndash;&gt;-->
+                            <!--&lt;!&ndash;</td>&ndash;&gt;-->
+                        <!--&lt;!&ndash;</tr>&ndash;&gt;-->
+                        <!--&lt;!&ndash;</tbody>&ndash;&gt;-->
+                        <!--&lt;!&ndash;{% endfor %} &lt;!&ndash; for loop on comments &ndash;&gt;&ndash;&gt;-->
+                    <!--&lt;!&ndash;</table>&lt;!&ndash;.table Main&ndash;&gt;&ndash;&gt;-->
                 </div>
             </div>
         </div>
@@ -121,6 +154,7 @@
 
     $('reply_button').click(function(e){
         e.preventDefault();
+        alert('reply hit');
         $(this).next('.reply_comment').fadeToggle();
     });
 
