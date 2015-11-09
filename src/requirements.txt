@@ -1,0 +1,4 @@
+Django==1.8.5
+django-crispy-forms==1.5.2
+dl==0.1.0
+Pillow==3.0.0

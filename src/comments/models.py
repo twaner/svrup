@@ -49,7 +49,6 @@ class Comment(models.Model):
         return self.user.username
 
     def get_absolute_url(self):
-        print('comment get_absolute_url {0}'.format(self))
         return reverse('comment_thread', kwargs={'id': self.id})
 
     @property

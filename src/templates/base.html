@@ -40,6 +40,22 @@
     {% include 'navbar.html' %}
 
     <div class="container">
+        {% if messages %}
+            {% for message in messages %}
+            <div class="alert {% if 'error' in message.tags %} alert-warning {% else %} alert-success {% endif %}" role="alert">
+                {% if 'safe' in message.tags %} {{ message|safe }} {% else %}
+                {{ message }}
+                {% endif %}
+                Tags: {{ message.tags }}
+            </div>
+            <!--<div class="alert alert-info" role="alert">...</div>-->
+            <!--<div class="alert alert-warning" role="alert">...</div>-->
+            <!--<div class="alert alert-danger" role="alert">...</div>-->
+            <!--{{ message }}-->
+            <!--{{ message.tags }}-->
+            {% endfor %}
+        {% endif %}
+
         {% block content %}
         {% endblock content %}
 

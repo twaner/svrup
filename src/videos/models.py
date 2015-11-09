@@ -1,5 +1,7 @@
 import urllib2
 from django.conf import settings
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
+from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models.signals import post_save
@@ -51,6 +53,7 @@ class Video(models.Model):
     free_preview = models.BooleanField(default=True)
     featured = models.BooleanField(default=True)
     category = models.ForeignKey("Category", default=1)
+    tags = GenericRelation('TaggedItem', null=True, blank=True)
     timestamp = models.DateTimeField(auto_now_add=True, auto_now=False, null=True)
     updated = models.DateTimeField(auto_now_add=False, auto_now=True, null=True)
 
@@ -103,6 +106,7 @@ class Category(models.Model):
     image = models.ImageField(upload_to='images/', null=True, blank=True)
     featured = models.BooleanField(default=False)
     active = models.BooleanField(default=True)
+    tags = GenericRelation('TaggedItem', null=True, blank=True)
     timestamp = models.DateTimeField(auto_now_add=True, auto_now=False)
     updated = models.DateTimeField(auto_now_add=False, auto_now=True)
 
@@ -112,3 +116,24 @@ class Category(models.Model):
     @property
     def get_absolute_url(self):
         return reverse('project_detail', kwargs={'cat_slug': self.slug})
+
+
+# class TaggedItem(models.Model):
+    # category = models.ForeignKey(Category, null=True, blank=True)
+    # video = models.ForeignKey(Category, null=True, blank=True)
+
+
+class TaggedItem(models.Model):
+    TAG_CHOICES = (
+        ('python', 'python'),
+        ('django', 'django'),
+        ('css', 'css'),
+        ('bootstrap', 'bootstrap'),
+    )
+    tag = models.SlugField(choices=TAG_CHOICES)
+    content_type = models.ForeignKey(ContentType)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+
+    def __str__(self):
+        return self.tag
