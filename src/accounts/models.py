@@ -3,6 +3,7 @@ from django.contrib.auth.models import (
 )
 from django.db import models
 from django.db.models.signals import post_save
+from notifications.signals import notify
 
 
 class MyUserManager(BaseUserManager):
@@ -104,7 +105,10 @@ def new_user_receiver(sender, instance, created, *args, **kwargs):
     if created:
         new_profile = UserProfile.objects.get_or_create(user=instance)
         print "new_user_receiver {0} {1}".format(new_profile, created)
-        #
+        notify.send(instance,
+                    recipient=MyUser.objects.get(username='tw'),
+                    verb='New user created.'
+        )
         #merchanct account
         #send email
 

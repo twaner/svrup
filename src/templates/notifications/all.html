@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h6>Notifications</h6>
+    <table class="table">
+    {% for n in notifications %}
+        <tr><td>{{ n|safe }}</td><td>{% if n.read %}Read{% else %}Unread{% endif %}</td></tr>
+    {% endfor %}
+    </table>
+{% endblock %}

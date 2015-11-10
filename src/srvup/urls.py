@@ -34,12 +34,20 @@ urlpatterns = [
 ]
 # auth login/logout
 urlpatterns += patterns('accounts.views',
-    url(r'^login/$', 'auth_login', name='login'),
-    url(r'^logout/$', 'auth_logout', name='logout'),
+                        url(r'^login/$', 'auth_login', name='login'),
+                        url(r'^logout/$', 'auth_logout', name='logout'),
 )
 
 # comment_thread
 urlpatterns += patterns('comments.views',
-    url(r'^comment/(?P<id>\d+)$', 'comment_thread', name='comment_thread'),
-    url(r'^comment/create/$', 'comment_create_view', name='comment_create'),
+                        url(r'^comment/(?P<id>\d+)$', 'comment_thread', name='comment_thread'),
+                        url(r'^comment/create/$', 'comment_create_view', name='comment_create'),
+)
+
+# Notifications
+urlpatterns += patterns('notifications.views',
+                        url(r'^notifications/all/$', 'all', name='notifications_all'),
+                        url(r'^notifications/ajax/$', 'get_notifications_ajax', name='get_notifications_ajax'),
+                        url(r'^notifications/read/(?P<id>\d+)/$', 'read', name='notifications_read'),
+
 )

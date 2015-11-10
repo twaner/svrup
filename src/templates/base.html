@@ -40,6 +40,9 @@
     {% include 'navbar.html' %}
 
     <div class="container">
+        <div id="notificationsLoader">
+
+        </div>
         {% if messages %}
             {% for message in messages %}
             <div class="alert {% if 'error' in message.tags %} alert-warning {% else %} alert-success {% endif %}" role="alert">
@@ -78,5 +81,31 @@
             {% endblock jQuery %}
         })
     </script>
+    <script>
+      $(document).ready(function(){
+        $('.notification-toggle').click(function(e){
+            e.preventDefault();
+            $.ajax({
+                type: 'POST',
+                url: "{% url 'get_notifications_ajax' %}",
+                data: {
+                    csrfmiddlewaretoken: "{{ csrf_token }}",
+                },
+                success: function(data){
+                    $('#notificationsLoader').html('')
+                    $(data.notifications).each(function(){
+                        $('#notificationsLoader').append(this + '<br/>');
+                    });
+                    var count = data.count;
+                    console.log('success' + data.notifications + 'count ' + count);
+                },
+                error: function(rs, e){
+                    console.log(rs);
+                    console.log(e);
+                },
+            })
+        });
+      });
+  </script>
   </body>
 </html>

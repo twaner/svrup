@@ -8,10 +8,11 @@ from .models import Notification
 class NotificationAdmin(admin.ModelAdmin):
     class Meta:
         model = Notification
+
     list_display = (
-            'sender_content_type', 'sender_object_id', 'sender_object', 'verb', 'action_content_type',
-            'action_object_id',
-            'action_object', 'target_content_type', 'target_object_id', 'target_object', 'recipient')
+        'read', 'sender_content_type', 'sender_object_id', 'sender_object', 'verb', 'action_content_type',
+        'action_object_id',
+        'action_object', 'target_content_type', 'target_object_id', 'target_object', 'recipient')
 
 
 admin.site.register(Notification, NotificationAdmin)
