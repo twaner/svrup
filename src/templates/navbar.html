@@ -16,7 +16,19 @@
       </ul>
       <ul class="nav navbar-nav navbar-right">
           {% if user.is_authenticated %}
-          <li><a href="#" class="notification-toggle">Notifications <span class="badge">5</span></a> </li>
+          <!--<li><a href="#" class="notification-toggle">Notifications <span class="badge">5</span></a> </li>-->
+          <li class="dropdown">
+              <a href="#" class="dropdown-toggle notification-toggle" data-toggle="dropdown" role="button"
+                 aria-expanded="false">
+                  <span class="glyphicon glyphicon-inbox" aria-hidden="true"></span>
+                <span class="caret"></span> </a>
+              <ul class="dropdown-menu" role="menu" id="notification_dropdown">
+                <!--<li><a href="#">Action</a></li>-->
+                <!--<li><a href="#">Another action</a></li>-->
+                <!--<li><a href="#">Something else here</a></li>-->
+                <!--<li><a href="#">Separated link</a></li>-->
+              </ul>
+          </li>
           <li><a href="{% url 'logout' %}"><i class="fa fa-user"></i>  {{ user.username }} Logout </a></li>
           {% else %}
           <li><a href="{% url 'login' %}"><i class="fa fa-user"> Login</a></li>

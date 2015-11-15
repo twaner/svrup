@@ -75,7 +75,7 @@ class Notification(models.Model):
     objects = NotificationManager()
 
     class Meta:
-        ordering = ['-timestamp',]
+        ordering = ['-timestamp', ]
 
     def __str__(self):
 
@@ -101,11 +101,36 @@ class Notification(models.Model):
         return '%(sender)s %(verb)s' % context
         # return '{0} {1} {2} {3}'.format(context['sender'], context['verb'], context['action'], context['target'])
 
+    @property
+    def get_link(self):
+        try:
+            target_url = self.target_object.get_absolute_url()
+        except:
+            target_url = reverse('notifications_all')
+        context = {
+            'sender': self.sender_object,
+            'verb': self.verb,
+            'action': self.action_object,
+            'target': self.target_object,
+            'target_url': target_url,
+            'verify_read': reverse('notifications_read', kwargs={'id': self.id}),
+        }
+        if self.target_object:
+            i = "<a href='%(verify_read)s?next=%(target_url)s'>%(sender)s %(verb)s %(target)s with %(action)s</a>" \
+                   % context
+            # print "get_link in IF {0} target_obj: {1}".format(i, self.target_object)
+            return i
+        else:
+            i = "<a href='%(verify_read)s?next=%(target_url)s'>%(sender)s %(verb)s</a>" % context
+            # print "get_link in ELSE {0}".format(i)
+            return i
+
 
 def new_notification(sender, *args, **kwargs):
     kwargs.pop('signal', None)
     recipient = kwargs.pop('recipient')
     verb = kwargs.pop('verb')
+    affected_users = kwargs.pop('affected_users')
     # target = kwargs.pop('target', None)
     # action = kwargs.pop('action', None)
     new_note = Notification(
@@ -121,6 +146,8 @@ def new_notification(sender, *args, **kwargs):
             setattr(new_note, '{0}_content_type'.format(option), ContentType.objects.get_for_model(obj))
             setattr(new_note, '{0}_object_id'.format(option), obj.id)
     new_note.save()
+
+
 notify.connect(new_notification)
 
 """

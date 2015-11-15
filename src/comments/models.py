@@ -5,6 +5,7 @@ import datetime
 from accounts.models import MyUser
 from videos.models import Video
 # Create your models here.
+from fnmatch import filter
 
 
 class CommentManager(models.Manager):
@@ -50,6 +51,22 @@ class Comment(models.Model):
 
     def get_absolute_url(self):
         return reverse('comment_thread', kwargs={'id': self.id})
+
+    def get_affected_users(self):
+        # needs to be a parent and have children; children, in effect,  are affected users
+        comment_children = self.get_children()
+        if comment_children is not None:
+            users = []
+            # [users.append(c.user) for c in comment_children]
+            users2 = map(lambda x: x.user, filter(lambda y: y.user in users2, comment_children))
+            for comment in comment_children:
+                if comment_children.user in users:
+                    pass
+                else:
+                    users.append(comment.user)
+                print ('get_affected_users --> {0}: \n users2 {1}').format(users, users2)
+                return users
+        return None
 
     @property
     def get_origin(self):

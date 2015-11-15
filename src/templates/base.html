@@ -92,12 +92,18 @@
                     csrfmiddlewaretoken: "{{ csrf_token }}",
                 },
                 success: function(data){
-                    $('#notificationsLoader').html('')
-                    $(data.notifications).each(function(){
-                        $('#notificationsLoader').append(this + '<br/>');
-                    });
+                    $('#notification_dropdown').html('<li role="presentation" class="dropdown-header">Notifications</li>');
                     var count = data.count;
-                    console.log('success' + data.notifications + 'count ' + count);
+                    console.log('count of notif ' + count);
+                    if (count == 0){
+                        var url = "{% url 'notifications_all' %}"
+                        $('#notification_dropdown').append("<li><a href='"+ url +"'>View All Notifications</li>");
+                    } else {
+                        $(data.notifications).each(function(){
+                            var link = this;
+                            $('#notification_dropdown').append('<li>' + link + '</li>');
+                        });
+                    }
                 },
                 error: function(rs, e){
                     console.log(rs);
@@ -106,6 +112,18 @@
             })
         });
       });
+
+
+      //$(data.notifications).each(function(){
+                        //var link = this;
+                        //if ($(this).attr("href") == null) {
+                          //  var url = "{% url 'notifications_all' %}"
+                            //var new_link = "<a href='"+ url +"'>" + link + "</a>";
+                            //$('#notification_dropdown').append('<li>' + new_link + '</li>');
+                        //} else {
+                          //  $('#notification_dropdown').append('<li>' + link + '</li>');
+                        //}
+                    //});
   </script>
   </body>
 </html>
